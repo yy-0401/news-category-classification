@@ -1,0 +1,11 @@
+.venv/
+강의자료/
+data/
+glove.6B/
+glove*.txt
+glove*.zip
+.DS_Store
+.ipynb_checkpoints/
+__pycache__/
+.env
+.vscode/
