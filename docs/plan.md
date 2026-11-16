@@ -6,49 +6,6 @@
 
 ## 문제정의 : 
 텍스트 데이터를 입력으로 받아 뉴스의 카테고리를 예측하는 딥 러닝 모델을 구현하기
-## 데이터 수집 : 
-18,846개의 뉴스 문서를 20개의 카테고리로 분류한 News Group 20 데이터를 사용
-https://scikit-learn.org/stable/datasets/real_world.html#the-20-newsgroups-text-dataset
-- data copy 먼저 실시
-- 자료형 확인하기 print(type(data)) => 이거에 따라서 하기 내용 골라서 실시
-
-형태를 먼저 확인한다. 만약 표라면? 
-- 어떻게 구성되는지 확인print("크기(행, 열):", data.shape)
-- 구성확인 print("열 이름들:", data.columns)
-- 몇줄 꺼내 보기print(data.head())
-
-Bunch 형태라면?
-- key값있는지 확인하기 print("들어있는 항목들:", data.keys())
-- data
-- target
-- target_names
-- DESCR 
-
-List, 배열이라면?
-- print("전체 개수:", len(data))
-- print("첫 번째 데이터:", data[0])
-- print("첫 번째 데이터의 타입:", type(data))
-
-## 데이터 분할 : 홀드 아웃 방식으로 나눈다.
-train 6, val 2, test 2
-베이스 라인 코드를 사용하되, val 추가하기
-- stratify=labels  # 카테고리 비율도 유지시켜주어 사용하기
-- train_val_inputs, test_inputs, train_val_targets, test_targets = train_test_split(
-		texts, 
-		labels, 
-		test_size=0.2, 
-		random_state=42, 
-		stratify=labels
-)
-
-train_test_split 은 한번에 이등분만 가능, train을 0.25만큼때서 val 데이터 나누기
-- train_inputs, val_inputs, train_targets, val_targets = train_test_split(
-    train_val_inputs, 
-    train_val_targets, 
-    test_size=0.25, 
-    random_state=42,
-    stratify=train_val_targets
-)
 
 ## 시드 고정 :
 import os
@@ -82,6 +39,50 @@ Word2Vec(
     workers=1                   # 학습에 쓰는 스레드 수 (1이면 순서가 고정돼 재현성이 좋아짐)
 )
 
+## 데이터 수집 : 
+18,846개의 뉴스 문서를 20개의 카테고리로 분류한 News Group 20 데이터를 사용
+[https://scikit-learn.org/stable/datasets/real_world.html#the-20-newsgroups-text-dataset
+- data copy 먼저 실시]
+- 자료형 확인하기 print(type(data)) => 이거에 따라서 하기 내용 골라서 실시
+
+형태를 먼저 확인한다. 만약 표라면? 
+- 어떻게 구성되는지 확인print("크기(행, 열):", data.shape)
+- 구성확인 print("열 이름들:", data.columns)
+- 몇줄 꺼내 보기print(data.head())
+
+Bunch 형태라면?
+- key값있는지 확인하기 print("들어있는 항목들:", data.keys())
+- data
+- target
+- target_names
+- DESCR 
+
+List, 배열이라면?
+- print("전체 개수:", len(data))
+- print("첫 번째 데이터:", data[0])
+- print("첫 번째 데이터의 타입:", type(data))
+
+## 데이터 분할 : 홀드 아웃 방식으로 나눈다.
+train 6, val 2, test 2
+베이스 라인 코드를 사용하되, val 추가하기
+- stratify=labels  # 카테고리 비율도 유지시켜주어 사용하기(EDA 이후 추가된 사항)
+- train_val_inputs, test_inputs, train_val_targets, test_targets = train_test_split(
+		texts, 
+		labels, 
+		test_size=0.2, 
+		random_state=42, 
+		stratify=labels
+)
+
+train_test_split 은 한번에 이등분만 가능, train을 0.25만큼때서 val 데이터 나누기
+- train_inputs, val_inputs, train_targets, val_targets = train_test_split(
+    train_val_inputs, 
+    train_val_targets, 
+    test_size=0.25, 
+    random_state=42,
+    stratify=train_val_targets
+)
+
 ## 정제 전, EDA :
 EDA는 train 데이터 기준으로 실시한다. 이 결과가 어떤 실험 후보로 이어지나
 클래스 분포(labels)
@@ -89,6 +90,8 @@ EDA는 train 데이터 기준으로 실시한다. 이 결과가 어떤 실험 �
 - bar plot로 labels 각각 그래프로 출력, 클래스 이름으로 표시
 
 문서 길이 분포
+정제를 어떻게 할지 결정하기 전에 전체적인 글의 길이를 확인하는 cell
+50% 로 중앙값을 확인하고 나머지는 정제 전 max_len의 길이를 확인해서 정제 후, 다시 문서 길이 분포 확인 예정
 - 베이스라인 그대로 사용
 
 단어 빈도
@@ -108,6 +111,10 @@ EDA는 train 데이터 기준으로 실시한다. 이 결과가 어떤 실험 �
 
 n-gram 분석
 - 자주 같이 나오는 단어쌍 확인
+
+데이터 확인 후, 추가 EDA
+- alt, comp, misc, rec, sci, soc, talk 라벨 앞에 해당 목록이 보인다. 해당 라벨을 가진 글들을 하나씩 확인해서 어떤 정보를 저렇게 표현했는지 확인한다.
+- 공백만 있는 문서와 원본 문서를 1x2로 출력하여 비교한다. 해당 문서가 학습하는데 카테고리 단서를 주는지 못주는지를 확인하고 제외할지 아닐지를 결정한다.
 
 ## 정제 클리닝 :
 추가 불용어는 train EDA로 정함
