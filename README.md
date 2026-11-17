@@ -1,7 +1,5 @@
 # 20 Newsgroups 뉴스 카테고리 분류: 임베딩 3종 비교
 
-> 상태: 🚧 진행 중 (설계 단계 완료, 베이스라인 구현 예정)
-
 텍스트를 입력으로 받아 20개 뉴스그룹 카테고리를 예측하는 딥러닝 분류 모델을 만들고,
 Word2Vec / FastText / GloVe 임베딩을 같은 조건에서 비교합니다.
 
@@ -19,23 +17,21 @@ Word2Vec / FastText / GloVe 임베딩을 같은 조건에서 비교합니다.
 ## 진행 계획
 1. 분할, EDA, 정제, 토큰화
 2. 임베딩 3종 베이스라인 학습 및 비교 (val 기준)
-3. 개선 실험
-4. 최종 모델 선정 및 test 평가
+3. 최종 모델 선정 및 test 평가
 
 ## 결과
 (작성 예정)
 
 ## 폴더 구조
-Mission_10/            (또는 레포 이름으로 변경)
+Mission_10/
 ├── README.md
 ├── .gitignore
 ├── requirements.txt
 ├── docs/
 │   └── plan.md
 ├── notebooks/
-│   └── baseline.ipynb
-├── data/              (올리지 않음: GloVe 파일을 여기로 이동)
-└── 강의자료/           (올리지 않음: 예시 노트북도 여기)
+    └── baseline.ipynb
+
 
 ## 문서
 - [계획서](docs/plan.md)
