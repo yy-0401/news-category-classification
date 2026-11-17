@@ -9,3 +9,5 @@ glove*.zip
 __pycache__/
 .env
 .vscode/
+checkpoints/
+*.pt
